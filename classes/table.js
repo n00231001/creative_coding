@@ -1,9 +1,9 @@
 class Table {
     constructor(obj){
         this.tableWidth = obj.tableWidth ?? 800;
-        this.tableHeight = obj.tableHeight ?? 800;
+        this.tableHeight = obj.tableHeight ?? 400;
 
-        this.tableXpos = obj.tableXpos ?? 200;
+        this.tableXpos = obj.tableXpos ?? 100;
         this.tableYpos = obj.tableYpos ?? 200;
 
         this.balls = [];
@@ -21,14 +21,16 @@ class Table {
     renderTable(){
         push()
         translate(this.tableXballXpos,this.tableYpos);
-        fill(255);
-        rect(0, 0, this.tableWidth, this.tableHeight);
+        fill(173, 130, 61)
+        rect(this.tableXpos -30, this.tableYpos -30, this.tableWidth + 60, this.tableHeight + 60);
+        fill(10, 56, 10);
+        rect(this.tableXpos, this.tableYpos, this.tableWidth, this.tableHeight);
         pop();
     }
 
     renderBalls(){
         push()
-        translate(this.tableXballXpos,this.tableYpos);
+        translate(this.tableXpos,this.tableYpos);
 
         this.balls.forEach((ball)=>{
             ball.render();
@@ -79,10 +81,15 @@ class Table {
             ball.ballVelX = -ball.ballVelX;
             ball.ballVelY = -ball.ballVelY;
         }
-        
+        //removes ball if it hits a hole
+        this.holes.forEach(hole => {
+            let d = dist(ball.ballXpos, ball.ballYpos, hole.x, hole.y); //calculates distance between ball and hole
+            if (d < 25) {
+                this.balls.splice(this.balls.indexOf(ball), 1);//splice is used to remove the ball from the array, the index of the ball is found using the indexOf method
+            }
+        });
     }
 
-    
     renderHoles() {
         push();
         translate(this.tableXpos, this.tableYpos);
@@ -95,20 +102,44 @@ class Table {
 
     generateHoles(){
         // Middle of top side
-        this.holes.push({ x: this.tableWidth / 2, y: 0 });
-        // Middle of right side
-        this.holes.push({ x: this.tableWidth, y: this.tableHeight / 2 });
+        this.holes.push({ x: this.tableWidth / 2, y: 0});
         // Middle of bottom side
         this.holes.push({ x: this.tableWidth / 2, y: this.tableHeight });
-        // Middle of left side
-        this.holes.push({ x: 0, y: this.tableHeight / 2 });
+        // bottom of left side
+        this.holes.push({ x: 0, y: this.tableHeight});
+        //top right side
+        this.holes.push({ x: this.tableWidth, y: 0});
+        //top left side
+        this.holes.push({ x: 0, y: 0});
+        //bottom right side
+        this.holes.push({ x: this.tableWidth, y: this.tableHeight});
         
-        // Optional: Keep the corner holes too (total 6 holes)
-        if (this.numHoles === 6) {
-            this.holes.push({ x: 0, y: 0 }); // Top-left corner
-            this.holes.push({ x: this.tableWidth, y: this.tableHeight }); // Bottom-right corner
-        }
     }
 
+    renderQue(){
+       push();
+         translate(mouseX, mouseY);
+            rotate(radians(this.que[0].queangle));
+            fill(64, 32, 13);
+            rect(0, 0, this.que[0].queWidth, this.que[0].queHeight);
+        pop();
+    }
+
+    generateQue(){
+        this.que.push(new Que({
+            queWidth: 10,
+            queHeight: 200,
+            queangle:0
+        }));
+    }
     
+    queCollision(){
+    }
+
+    turnRight(){
+        this.que[0].queangle += 5;
+    }
+    turnLeft(){
+        this.que[0].queangle -= 5;
+    }
 }

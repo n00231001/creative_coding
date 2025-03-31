@@ -1,9 +1,9 @@
 class holes {
     constructor(obj) {
-        this.holeXpos = obj.holeXpos ?? 200;
-        this.holeYpos = obj.holeYpos ?? 200;
+        this.holeXpos = obj.holeXpos;
+        this.holeYpos = obj.holeYpos;
     }
-    renderHoles() {
+    render() {
         push()
         translate(this.holeXpos, this.holeYpos);
         fill(0);
